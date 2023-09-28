@@ -1,0 +1,24 @@
+[global]
+my_url = https://bento.uat.propflo.in/auth/sign-in
+browser_name=edg
+
+[edit_profile_name]
+changed_name=Sai Harsha
+
+[phone_num]
+same_num=9856386897
+same_mail=yassharsha125@gmail.com
+
+[email]
+other_mail=yassharsha136@gmail.com
+other_num=9856386898
+
+
+[waiting_time]
+min_wait=2
+avg_wait=3
+max_wait=5
+
+#float(config.get('waiting_time', 'min_wait'))
+#float(config.get('waiting_time', 'avg_wait'))
+#float(config.get('waiting_time', 'max_wait'))
