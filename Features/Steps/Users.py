@@ -273,7 +273,8 @@ def step_impl(context):
 
     for i in range(3, l + 1):
         val = context.driver.find_element(By.XPATH, f"//tbody/tr[{i}]/td[2]").text
-        if context.driver.find_element(By.XPATH, f"//table/tbody/tr[{i}]/td[5]").text == "Enabled" and val != "Project Admin":
+        if context.driver.find_element(By.XPATH,
+                                       f"//table/tbody/tr[{i}]/td[5]").text == "Enabled" and val != "Project Admin":
             index = i
             SRRb = context.driver.find_element(By.XPATH, f"//tbody/tr[{i}]/td[3]").text
             report_to = context.driver.find_element(By.XPATH, f"//table/tbody/tr[{i}]/td[3]").text
@@ -328,7 +329,6 @@ def step_impl(context):
 
 @when(u'click on change reporting manager')
 def step_impl(context):
-
     c = context.driver.find_elements(By.XPATH, "//tr/td[6]/div/div/div/div/p")
     for i in range(1, len(c) + 1):
         te = context.driver.find_element(By.XPATH, f"(//tr/td[6]/div/div/div/div/p)[{i}]")
@@ -360,7 +360,7 @@ def step_impl(context):
     for j in range(2, len(srl)):
         if SRRb != srl[j]:
             print(SRRb, srl[j])
-            reporting_m= context.driver.find_element(By.XPATH, f"//option[{j + 1}]").text
+            reporting_m = context.driver.find_element(By.XPATH, f"//option[{j + 1}]").text
             context.driver.find_element(By.XPATH, f"//option[{j + 1}]").click()
             break
         else:
@@ -441,24 +441,24 @@ def step_impl(context):
     assert ch == vvv
 
 
-
-
-
 @when(u'click on disable user option on user who doesnt have reportiees')
 def step_impl(context):
     global row
     l = len(context.driver.find_elements(By.XPATH, "//tbody/tr/td[2]"))
     for j in range(1, (l + 1)):
-
+        va = context.driver.find_element(By.XPATH, f"//tbody/tr[{j}]/td[2]").text
         val = len(context.driver.find_elements(By.XPATH, f"//tbody/tr[{j}]/td[4]/div/div/div"))
         status = context.driver.find_element(By.XPATH, f"//tbody/tr[{j}]/td[5]").text
 
-        if val == 0 and status == "Enabled":
+        if val == 0 and status == "Enabled" and va != "Project Admin":
             row = j
             if j > 3:
                 z = context.driver.find_element(By.XPATH, f"//table/tbody/tr[{j - 2}]/td[6]/div/*")
                 context.driver.execute_script("arguments[0].scrollIntoView();", z)
                 time.sleep(1)
+            else:
+                context.driver.refresh()
+                time.sleep(5)
             context.driver.find_element(By.XPATH, f"//table/tbody/tr[{j}]/td[6]/div/*").click()
             time.sleep(1)
             break
@@ -546,7 +546,6 @@ def step_impl(context):
     global RM, SR
     SRRb = context.driver.find_element(By.XPATH, f"//tbody/tr[{ro}]/td[2]").text
 
-
     context.driver.find_element(By.XPATH, "(//select)[1]").click()
     SRL = context.driver.find_elements(By.XPATH, "//option")
     srl = []
@@ -581,3 +580,113 @@ def step_impl(context):
     SRR = context.driver.find_element(By.XPATH, f"//tbody/tr[{ro}]/td[2]").text
 
     assert (RM == RMM and SR == SRR)
+
+
+@When(u'click on option of users who has reporties')
+def step_impl(context):
+    l = len(context.driver.find_elements(By.XPATH, "//tbody/tr/td[2]"))
+    global line
+    global names
+    global vaa
+    for j in range(1, (l + 1)):
+
+        vaa = context.driver.find_element(By.XPATH, f"//tbody/tr[{j}]/td[2]").text
+        val = len(context.driver.find_elements(By.XPATH, f"//tbody/tr[{j}]/td[4]/div/div/div"))
+        if val > 0 and vaa != "Project Admin":
+            line = j
+            if j > 3:
+                z = context.driver.find_element(By.XPATH, f"//table/tbody/tr[{j - 2}]/td[6]/div/*")
+                context.driver.execute_script("arguments[0].scrollIntoView();", z)
+                time.sleep(1)
+            else:
+                context.driver.refresh()
+                time.sleep(5)
+
+            names = context.driver.find_element(By.XPATH, f"//tbody/tr[{j}]/td[3]").text
+            context.driver.find_element(By.XPATH, f"//table/tbody/tr[{j}]/td[6]/div/*").click()
+            time.sleep(1)
+            break
+
+
+@When(u'click on disable option and change reporties reporting manager')
+def step_impl(context):
+    context.driver.find_element(By.XPATH, "(//tr/td[6]/div/div/div/div/p)[3]").click()
+    listt = len(context.driver.find_elements(By.XPATH, "//select"))
+
+    for i in range(1, listt + 1):
+        context.driver.find_element(By.XPATH, f"(//select)[{i}]").click()
+        # time.sleep(2)
+        labels = len(context.driver.find_elements(By.XPATH, f"(//select)[{i}]//option"))
+        for j in range(2, labels + 1):
+            tt = context.driver.find_element(By.XPATH, f"(//select)[{i}]//option[{j}]").text
+            if tt != names:
+                context.driver.find_element(By.XPATH, f"(//select)[{i}]//option[{j}]").click()
+                # time.sleep(2)
+                break
+
+    assert listt > 0
+
+
+@When(u'click on save button')
+def step_impl(context):
+    context.driver.find_element(By.XPATH, "//button[normalize-space()='Save']").click()
+    time.sleep(2)
+
+
+@Then(u'validate it is disbaled or not')
+def step_impl(context):
+    st = context.driver.find_element(By.XPATH, f"//tbody/tr[{line}]/td[5]").text
+
+    red = context.driver.find_element(By.XPATH, f"//tbody/tr[{line}]/td[1]/div[1]/span[2]").get_attribute(
+        "ng-reflect-ng-class")
+    assert st == "Disabled" and "red" in red
+
+
+@When(u'click on change user role')
+def step_impl(context):
+    context.driver.find_element(By.XPATH, "(//tr/td[6]/div/div/div/div/p)[4]").click()
+    context.driver.find_element(By.XPATH, "(//select)[1]").click()
+    time.sleep(2)
+
+
+@When(u'select from drop downs')
+def step_impl(context):
+    labels = len(context.driver.find_elements(By.XPATH, "(//select)[1]//option"))
+    global valrole
+    for i in range(3, labels + 1):
+
+        if context.driver.find_element(By.XPATH, f"(//select)[1]//option[{i}]").text != vaa:
+            valrole = context.driver.find_element(By.XPATH, f"(//select)[1]//option[{i}]").text
+            context.driver.find_element(By.XPATH, f"(//select)[1]//option[{i}]").click()
+            break
+
+    time.sleep(3)
+    drops = len(context.driver.find_elements(By.XPATH, "(//select)"))
+    global valmanager
+    for j in range(2, drops + 1):
+
+        if j == 2:
+            context.driver.find_element(By.XPATH, f"(//select)[{j}]").click()
+            time.sleep(1)
+            valmanager = context.driver.find_element(By.XPATH, f"(//select)[{j}]//option[{2}]").text
+            context.driver.find_element(By.XPATH, f"(//select)[{j}]//option[{2}]").click()
+            context.driver.find_element(By.XPATH, "//label[text()=' Select Reporting Manager']").click()
+        else:
+            time.sleep(2)
+            context.driver.find_element(By.XPATH, f"(//select)[{j}]").click()
+            label = len(context.driver.find_elements(By.XPATH, f"(//select)[{j}]//option"))
+            for i in range(2, label + 1):
+                if context.driver.find_element(By.XPATH, f"(//select)[{j}]//option[{i}]").text != names:
+                    context.driver.find_element(By.XPATH, f"(//select)[{j}]//option[{i}]").click()
+                    context.driver.find_element(By.XPATH, "//label[text()=' Select Reporting Manager']").click()
+                    break
+    context.driver.find_element(By.XPATH, "//button[normalize-space()='Save']").click()
+    time.sleep(2)
+
+
+@Then(u'validate the role is changed or not')
+def step_impl(context):
+    p = (context.driver.find_element(By.XPATH, f"//tbody/tr[{line}]/td[2]").text == valrole)
+
+    q = (context.driver.find_element(By.XPATH, f"//tbody/tr[{line}]/td[3]").text == valmanager)
+    assert p and q

@@ -14,8 +14,8 @@ from Pages.DashboardPage import DashboardPage
 config = configparser.ConfigParser()
 config.read(r'config.txt')
 
-url = config.get('global', 'my_url')
-browser = config.get('global', 'browser_name')
+url =config.get('global', 'my_url')
+browser =  config.get('global', 'browser_name')
 
 def before_all(context):
 
@@ -51,8 +51,8 @@ def before_all(context):
 
 
 def after_all(context):
-    context.DP=DashboardPage(context.driver)
-    context.DP.clickSignout()
+    # context.DP=DashboardPage(context.driver)
+    # context.DP.clickSignout()
     context.driver.quit()
 
 def after_step(context,step):

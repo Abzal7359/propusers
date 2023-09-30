@@ -78,8 +78,18 @@ Feature: checking functionalities in users section under ->user management
     And select role and select Reporting manager
     Then validate the role and reporting manger in list got selected ones or not
 
+  Scenario: Disable user who has reporties and verify it is disabled or not
 
+    When click on option of users who has reporties
+    And click on disable option and change reporties reporting manager
+    And click on save button
+    Then validate it is disbaled or not
 
+  Scenario:change user role who has reporties and verify it the user role changed or not
+    When click on option of users who has reporties
+    And click on change user role
+    And select from drop downs
+    Then validate the role is changed or not
 
 
 
